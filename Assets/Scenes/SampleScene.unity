@@ -324,6 +324,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4ac56d911c5542dc93193eded27ba1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyData: {fileID: 11400000, guid: 1d7e205822902418c8873141c9e3bc8b, type: 2}
+  towerData: {fileID: 11400000, guid: a3fca38104652482fa80ed4354b71f9a, type: 2}
+  projectileData: {fileID: 11400000, guid: 992e424cda1d344449b3e60717ae4e28, type: 2}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0

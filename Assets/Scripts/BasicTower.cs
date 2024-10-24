@@ -17,7 +17,6 @@ public class BasicTower : MonoBehaviour, ITower
     public float Health { get; set; }
 
     private IEnemy nearestEnemy;
-    //private Transform nearestEnemyTransform;
 
     public TextMeshPro healthText;
 
@@ -79,10 +78,6 @@ public class BasicTower : MonoBehaviour, ITower
     void FindNearestEnemy()
     {
         nearestEnemy = _enemyManager.GetNearestEnemy(transform.position);
-        //if (nearestEnemy != null)
-        //{
-        //    nearestEnemyTransform = ((MonoBehaviour)nearestEnemy).transform;
-        //}
     }
 }
 

@@ -45,18 +45,14 @@ public class EnemySpawner : MonoBehaviour
     }
 
     Vector3 GetRandomPositionAroundTower()
-    {
-        // Rastgele bir açı üret
+    {        
         float angle = Random.Range(0f, Mathf.PI * 2);
 
-        // Kule merkezinden rastgele bir mesafede pozisyon üret
         float distance = Random.Range(20f, SpawnRadius);
 
-        // X ve Z ekseninde pozisyon hesapla
         float x = Mathf.Cos(angle) * distance;
         float z = Mathf.Sin(angle) * distance;
 
-        // Kule pozisyonunun etrafında rastgele bir pozisyon döndür
         Vector3 spawnPos = new Vector3(x, 0, z);
 
         return spawnPos;

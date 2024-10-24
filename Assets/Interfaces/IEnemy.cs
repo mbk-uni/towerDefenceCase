@@ -7,8 +7,9 @@ public interface IEnemy
     float Speed { get; }
     float Health { get; set; }
     float Damage { get; }
+    Vector3 Position { get; }
 
     void Move();
     void TakeDamage(float amount);
-    void Attack();
+    bool IsDead();
 }

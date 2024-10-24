@@ -2,95 +2,102 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using Zenject;
+using TMPro;
 
 public class BasicEnemy : MonoBehaviour, IEnemy
 {
     [Inject] private EnemyData _enemyData;
-    [Inject] private List<ITower> _towers;
     [Inject] private TowerManager _towerManager;
+    [Inject] private EnemyManager _enemyManager;
 
     public float Speed => _enemyData.speed;
     public float Health { get; set; }
     public float Damage => _enemyData.damage;
 
-    private ITower _targetTower;
-    private Transform _targetTransform;
+    public Vector3 Position => transform.position;
+
+    private ITower nearestTower;
+    private Transform nearestTowerTransform;
+
+    public TextMeshPro healthText;
 
     private void Start()
     {
         Health = _enemyData.health;
 
-        _towerManager.OnTowerAdded += OnTowerAdded;
-        _towerManager.OnTowerRemoved += OnTowerRemoved;
+        FindNearestTower();
 
-        SetTargetTower();
-    }
+        healthText.text = Health.ToString("F0");
 
-    private void OnDestroy()
-    {        
-        _towerManager.OnTowerAdded -= OnTowerAdded;
-        _towerManager.OnTowerRemoved -= OnTowerRemoved;
-    }
-
-    private void OnTowerAdded(ITower tower)
-    {
-        SetTargetTower();
-    }
-
-    
-    private void OnTowerRemoved(ITower tower)
-    {
-        SetTargetTower();
+        _enemyManager.AddEnemy(this);
     }
 
     private void Update()
     {
-        if (_targetTower != null)
+        if (nearestTowerTransform != null)
         {
             Move();
+        }
+        else
+        {
+            FindNearestTower();
+        }
+    }
+
+    private void OnDestroy()
+    {
+        _enemyManager.RemoveEnemy(this);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        ITower tower = other.gameObject.GetComponent<ITower>();
+
+        if (tower != null)
+        {
+            tower.TakeDamage(Damage);
+            Destroy(gameObject);
         }
     }
 
     public void Move()
     {
-        if (_targetTransform == null) return;
+        
+        Vector3 direction = (nearestTowerTransform.position - transform.position).normalized;
 
-        Vector3 direction = (_targetTransform.position - transform.position).normalized;
+        
         transform.position += direction * Speed * Time.deltaTime;
-    }
-
-    private void SetTargetTower()
-    {
-        var towers = _towerManager.GetTowers();
-        if (towers.Count == 0)
-        {
-            _targetTower = null;
-            _targetTransform = null;
-            return;
-        }
-
-        
-        _targetTower = towers.OrderBy(tower => Vector3.Distance(transform.position, (tower as MonoBehaviour).transform.position)).FirstOrDefault();
-
-        
-        if (_targetTower != null)
-        {
-            _targetTransform = (_targetTower as MonoBehaviour).transform;
-        }
     }
 
 
     public void TakeDamage(float amount)
     {
         Health -= amount;
+        healthText.text = Health.ToString("F0");
+
         if (Health <= 0)
         {
             Destroy(gameObject);
+            _enemyManager.RemoveEnemy(this);
         }
     }
 
-    public void Attack()
+    public bool IsDead()
     {
-
+        return Health <= 0;
     }
+
+    void FindNearestTower()
+    {
+        nearestTower = _towerManager.GetNearestTower(transform.position);
+        if (nearestTower != null)
+        {
+            nearestTowerTransform = ((MonoBehaviour)nearestTower).transform;
+        }
+    }
+}
+
+public class BasicEnemyFactory : PlaceholderFactory<BasicEnemy>
+{
+
 }

@@ -6,5 +6,9 @@ public interface IProjectile
 {
     float Speed { get; }
     float Damage { get; }
-    void Launch(IEnemy target);
+
+    Vector3 Target { get; set; }
+    Vector3 StartPosition { get; set; }
+
+    void Launch(IEnemy target, Vector3 startPosition);
 }

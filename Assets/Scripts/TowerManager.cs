@@ -1,50 +1,34 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Zenject;
+using System.Linq;
 
-public class TowerManager : MonoBehaviour
+public class TowerManager
 {
-    private List<ITower> _towers = new List<ITower>();
+    public List<ITower> towers = new List<ITower>();
 
-    // Kule eklendiğinde veya silindiğinde eventler tetiklenecek
-    public event Action<ITower> OnTowerAdded;
-    public event Action<ITower> OnTowerRemoved;
-
-    // Kulelerin listesini Inject etmek için kullanacağız
-    [Inject]
-    public void Initialize(List<ITower> initialTowers)
-    {
-        // Başlangıçta var olan kuleleri ekle
-        foreach (var tower in initialTowers)
-        {
-            AddTower(tower);
-        }
-    }
-
-    // Yeni kule ekleme fonksiyonu
+    // Kule ekleme
     public void AddTower(ITower tower)
     {
-        if (!_towers.Contains(tower))
-        {
-            _towers.Add(tower);
-            OnTowerAdded?.Invoke(tower); // Event'i tetikle
-        }
+        towers.Add(tower);
     }
 
-    // Kule silme fonksiyonu
+    // Kule çıkarma
     public void RemoveTower(ITower tower)
     {
-        if (_towers.Contains(tower))
-        {
-            _towers.Remove(tower);
-            OnTowerRemoved?.Invoke(tower); // Event'i tetikle
-        }
+        towers.Remove(tower);
     }
 
-    // Kule listesini almak için bir fonksiyon
-    public List<ITower> GetTowers()
+    // En yakın kuleyi bul
+    public ITower GetNearestTower(Vector3 position)
     {
-        return _towers;
+        if (towers.Count == 0)
+        {
+            return null; // Kule yoksa null döndür
+        }
+
+        // En yakın kuleyi bulmak için mesafeyi sırala
+        return towers
+            .OrderBy(t => Vector3.Distance(((MonoBehaviour)t).transform.position, position))
+            .FirstOrDefault();
     }
 }

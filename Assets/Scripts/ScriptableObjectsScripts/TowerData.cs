@@ -5,4 +5,5 @@ public class TowerData : ScriptableObject
 {
     public float fireRate;
     public float range;
+    public float health;
 }

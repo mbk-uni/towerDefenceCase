@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd622e22a925a49898830b9fa53db575, type: 3}
   m_Name: BasicTower
   m_EditorClassIdentifier: 
-  fireRate: 10
-  range: 1
+  fireRate: 0.3
+  range: 10
+  health: 100
